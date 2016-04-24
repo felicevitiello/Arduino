@@ -22,7 +22,7 @@
 
 // **** Define the WiFi name and password ****
 #define WIFICONF_INSKETCH
-#define WiFi_SSID               "VLAN FV"
+#define WiFi_SSID               "WLAN FV"
 #define WiFi_Password           "felicesenza"    
 
 // Include framework code and libraries
@@ -175,7 +175,7 @@ void loop()
               mInput(Appoggio) =0x0;
              }
             
-            Serial.println("Fine Fast");
+            //Serial.println("Fine Fast");
         }
         
         FAST_910ms() { 
@@ -197,8 +197,14 @@ void loop()
                 // Apply message to lamp
                 String message = String(value);
                 message.trim();
-                if (message == "ON") {publish(Notte);}
-                if (message == "OFF") {publish(Giorno);}
+                if (message == "ON") {
+                  publish(Notte);
+                  Serial.println("Notte");
+                  }
+                if (message == "OFF") {
+                  publish(Giorno);
+                  Serial.println("Giorno");
+                  }
               }
               if (subscription == &onoffalarm) {
                 char *value = (char *)onoffalarm.lastread;
@@ -211,14 +217,16 @@ void loop()
                 if (message == "ON") {
                   Send(51,ANTITHEFT,Souliss_T4n_Antitheft);
                   publish(Alarm_Armed);
+                   Serial.println("Allarme ON");
                 }
                 if (message == "OFF") {
                   Send(51,ANTITHEFT,Souliss_T4n_NotArmed);
                   publish(Alarm_Disarmed);
+                  Serial.println("Allarme OFF");
                 }
                 if (subscription == &generalfeed) {
                 char *value = (char *)generalfeed.lastread;
-                Serial.print(F("Received: "));
+                Serial.print(F("General Feed Received: "));
                 Serial.println(value);
           
                 // Apply message to lamp
