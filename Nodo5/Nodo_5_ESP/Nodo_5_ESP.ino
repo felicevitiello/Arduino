@@ -64,7 +64,7 @@ Adafruit_MQTT_Publish photocell = Adafruit_MQTT_Publish(&mqtt, PHOTOCELL_FEED);
 // Setup a feed called 'onoff' for subscribing to changes.
 const char ONOFF_FEED[] PROGMEM = AIO_USERNAME "/feeds/casa-io";
 Adafruit_MQTT_Subscribe onoffbutton = Adafruit_MQTT_Subscribe(&mqtt, ONOFF_FEED);
-const char ALARM_ONOFF_FEED[] PROGMEM = AIO_USERNAME "/feeds/alarm-onoff";
+const char ALARM_ONOFF_FEED[] PROGMEM = AIO_USERNAME "/feeds/allarme-casa";
 Adafruit_MQTT_Subscribe onoffalarm = Adafruit_MQTT_Subscribe(&mqtt, ALARM_ONOFF_FEED);
 const char GENERAL_FEED[] PROGMEM = AIO_USERNAME "/feeds/general-feed";
 Adafruit_MQTT_Subscribe generalfeed = Adafruit_MQTT_Subscribe(&mqtt, GENERAL_FEED);
@@ -99,9 +99,9 @@ DHT dht(in_DHT1, DHTTYPE);
 
 // **** Define here the right pin for your ESP module **** 
 
-#define  in_IR1       D8
-#define  in_P1        D1
-#define  in_P2        D2
+#define  in_IR1       D6
+#define  in_P1        D7
+#define  in_P2        D8
 
 #define gateway_address 51
 #define myvNet_address  55
@@ -141,7 +141,12 @@ void setup(){
     Set_SimpleLight(Appoggio);        // Define a simple LED light logic
 
     tsl.setIntegrationTime(TSL2561_INTEGRATIONTIME_101MS);
+
+// ************************* Adafruit.io Subscribe *********************************/
     mqtt.subscribe(&onoffbutton);
+    mqtt.subscribe(&onoffalarm);
+    //mqtt.subscribe(&onoffbutton);
+// ********************************************************************************/ 
 }
 
 uint32_t x=0;
@@ -166,16 +171,16 @@ void loop()
             if (mInput(Appoggio) == Souliss_T1n_OnCmd)
              {
               publish(Campanello);
+              Serial.println("Campanello");
               mInput(Appoggio) =0x0;
              }
              else if (mInput(Appoggio) == Souliss_T1n_ToggleCmd)
              {
               Send(51,L5,Souliss_T1n_Timed+TempoLuciExt);
               Send(51,L6,Souliss_T1n_Timed+TempoLuciExt);
+              Serial.println("Luci Esterne");
               mInput(Appoggio) =0x0;
              }
-            
-            //Serial.println("Fine Fast");
         }
         
         FAST_910ms() { 
@@ -189,9 +194,12 @@ void loop()
           MQTT_connect();
             Adafruit_MQTT_Subscribe *subscription;
             if ((subscription = mqtt.readSubscription(300))) {
+              //Serial.println(subscription);
+              
+              
               if (subscription == &onoffbutton) {
                 char *value = (char *)onoffbutton.lastread;
-                Serial.print(F("Received: "));
+                Serial.print(F("FEED Giorno/Notte Ricevuto: "));
                 Serial.println(value);
           
                 // Apply message to lamp
@@ -206,9 +214,11 @@ void loop()
                   Serial.println("Giorno");
                   }
               }
+              
+              
               if (subscription == &onoffalarm) {
                 char *value = (char *)onoffalarm.lastread;
-                Serial.print(F("Received: "));
+                Serial.print(F("FEED Allarme Ricevuto: "));
                 Serial.println(value);
           
                 // Apply message to lamp
@@ -226,7 +236,7 @@ void loop()
                 }
                 if (subscription == &generalfeed) {
                 char *value = (char *)generalfeed.lastread;
-                Serial.print(F("General Feed Received: "));
+                Serial.print(F("FEED GENERAL Ricevuto: "));
                 Serial.println(value);
           
                 // Apply message to lamp
