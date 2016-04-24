@@ -54,8 +54,8 @@
 #define P2    33 //8 //Faretti                                                               NERO
 #define P5    31//5 //Campanello                                                            ROSSO PICCOLO
 #define in_DHT1 23//3                                                                      // ROSSO GRANDE
-#define in_IR1  A11  // Prima 0  //Infrarosso Bagno
-#define in_IR2  A12  // prima 4  //Infrarosso Scale
+#define in_IR1  A14  // Prima 0  //Infrarosso Bagno
+#define in_IR2  A15  // prima 4  //Infrarosso Scale
 #define in_IR3  A5  // Prima 5  //Infrarosso Ingresso
 #define in_POWER 37 //Ibngresso verifica tensione
 

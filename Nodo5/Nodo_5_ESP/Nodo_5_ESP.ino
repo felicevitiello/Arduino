@@ -36,7 +36,7 @@
 #define AIO_SERVER      "io.adafruit.com"
 #define AIO_SERVERPORT  1883                   // use 8883 for SSL
 #define AIO_USERNAME    "inshar"
-#define AIO_KEY         "7373919d13f62af84b36f4d19b78613fa9e0f84d"
+#define AIO_KEY         CHIAVE_ADAFRUITIO
 
 /************ Global State (you don't need to change this!) ******************/
 
