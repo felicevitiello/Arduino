@@ -144,8 +144,9 @@ void setup(){
 
 // ************************* Adafruit.io Subscribe *********************************/
     mqtt.subscribe(&onoffbutton);
+    mqtt.subscribe(&generalfeed);
     mqtt.subscribe(&onoffalarm);
-    //mqtt.subscribe(&onoffbutton);
+    
 // ********************************************************************************/ 
 }
 
@@ -234,7 +235,8 @@ void loop()
                   publish(Alarm_Disarmed);
                   Serial.println("Allarme OFF");
                 }
-                if (subscription == &generalfeed) {
+              }  
+              if (subscription == &generalfeed) {
                 char *value = (char *)generalfeed.lastread;
                 Serial.print(F("FEED GENERAL Ricevuto: "));
                 Serial.println(value);
@@ -244,20 +246,24 @@ void loop()
                 message.trim();
                 if (message == "FARETTI_ON") {
                   Send(51,L6,Souliss_T1n_OnCmd);
+                   Serial.println("Accendo Faretti");
    
                 }
                 if (message == "FARETTI_OFF") {
                   Send(51,L6,Souliss_T1n_OffCmd);
+                  Serial.println("Spengo Faretti");
                 }
                 if (message == "SPEGNI-LUCI") {
                  publish(SpegniLuci);
+                 Serial.println("Spengo Luci");
                 }
                 if (message == "CAMPANELLO") {
                  publish(Campanello);
+                 Serial.println("Squilla Campanello");
                 }
               }
              }
-        }
+        
       }  
       FAST_GatewayComms();    
       }  
